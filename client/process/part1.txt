@@ -1,0 +1,14 @@
+create authenticate ->login.jsx and signup.jsx
+then make router for pages
+
+react-icons
+daisy-ui
+
+//now adding redux tools
+install tollkit and redux in client only
+make a store folder and inside this slice folder and store.js
+slice->userslice.js->paste from code
+
+
+next is binding so in app.jsx binding process will start
+understand teh process
