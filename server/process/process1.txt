@@ -1,0 +1,4 @@
+routes cretae
+then model created
+
+//now time for adding database
