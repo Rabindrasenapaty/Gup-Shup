@@ -4,9 +4,14 @@ import MessageContainer from './MessageContainer'
 
 const Home = () => {
   return (
-    <div className='flex '>
-      <UserSidebar/>
-      <MessageContainer/>
+    <div className="flex h-screen">
+      {/* Sidebar */}
+      <UserSidebar />
+
+      {/* Chat Area */}
+      <div className="flex-1 overflow-y-auto">
+        <MessageContainer />
+      </div>
     </div>
   )
 }

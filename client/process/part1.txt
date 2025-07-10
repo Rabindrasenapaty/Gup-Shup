@@ -12,3 +12,5 @@ slice->userslice.js->paste from code
 
 next is binding so in app.jsx binding process will start
 understand teh process
+
+i cannot directly call pages in reducer like login as it is a async function so i need to use redux thunk for this 

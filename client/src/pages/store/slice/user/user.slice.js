@@ -16,7 +16,7 @@ export const userSlice = createSlice({
         // Add reducers for additional action types here, and handle loading state as needed
         builder.addCase(loginUserThunk.pending, (state, action) => {
             // Add user to the state array
-            console.log("pendning");
+            console.log("pending");
 
         });
         builder.addCase(loginUserThunk.fulfilled, (state, action) => {
