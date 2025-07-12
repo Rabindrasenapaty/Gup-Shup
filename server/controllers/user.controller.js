@@ -1,81 +1,131 @@
 import User from "../models/user.model.js"
-import { errorhandler } from "../utilities/errorHandler.utility.js";
+import ErrorHandler from "../utilities/errorHandler.utility.js";
 import { asyncHandler } from "../utilities/asyncHandler.utility.js";
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 
-export const register=asyncHandler(async(req,res,next)=>{
-    
-        const {fullName,username,password,gender}=req.body;
+export const register = asyncHandler(async (req, res, next) => {
 
-        if(!fullName|| !username|| !password){
+    const { fullName, username, password, gender } = req.body;
 
-            return next(new errorhandler("All fields are required",400))
-        }
-        const user=await User.findOne({username})
-        if (user){
-            return next(new errorhandler("user alreadu exist",400))
-        }
-        const avatarType=gender==="male"?"boy":"girl"
-        const avatar=`https://avatar.iran.liara.run/public/${avatarType}?username=${username}`
+    if (!fullName || !username || !password) {
 
-        const hashedPassword=await bcrypt.hash(password,10)
+        return next(new ErrorHandler("All fields are required", 400))
+    }
+    const user = await User.findOne({ username })
+    if (user) {
+        return next(new ErrorHandler("user alreadu exist", 400))
+    }
+    const avatarType = gender === "male" ? "boy" : "girl"
+    const avatar = `https://avatar.iran.liara.run/public/${avatarType}?username=${username}`
 
-        const newUser=await User.create({
-            username,
-            fullName,
-            password:hashedPassword,
-            gender,
-            avatar
+    const hashedPassword = await bcrypt.hash(password, 10)
+
+    const newUser = await User.create({
+        username,
+        fullName,
+        password: hashedPassword,
+        gender,
+        avatar
+    })
+    const tokenData = {
+        _id: newUser?._id
+    }
+    const token = jwt.sign(tokenData, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE })
+
+    res.status(200)
+        .cookie("token", token, {
+            expires: new Date(Date.now() + process.env.COOKIE_EXPIRES * 24 * 60 * 60 * 1000),
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "None"
         })
-
-        res.status(200).json({
-            success:true,
-            responseData:{
-                newUser
+        .json({
+            success: true,
+            responseData: {
+                newUser,
+                token
             }
 
         })
-        res.send("hello regsiter")
-        });
+    res.send("hello regsiter")
+});
 
-export const login=asyncHandler(async(req,res,next)=>{
-    
-        const {username,password}=req.body;
+export const login = asyncHandler(async (req, res, next) => {
 
-        if( !username|| !password){
+    const { username, password } = req.body;
 
-            return next(new errorhandler("All fields are required",400))
-        }
-        const user=await User.findOne({username})
-        if (!user){
-            return next(new errorhandler("Please enter a valid username or password",400))
-        }
+    if (!username || !password) {
 
-  
-
-        const isvalidPassword=await bcrypt.compare(password,user.password)
-        if(!isvalidPassword){
-            return next(new errorhandler("Please enter a valid username or passowrd",400))
-        }
+        return next(new ErrorHandler("All fields are required", 400))
+    }
+    const user = await User.findOne({ username })
+    if (!user) {
+        return next(new ErrorHandler("Please enter a valid username or password", 400))
+    }
 
 
 
-  
+    const isvalidPassword = await bcrypt.compare(password, user.password)
+    if (!isvalidPassword) {
+        return next(new ErrorHandler("Please enter a valid username or passowrd", 400))
+    }
 
-        res.status(200).json({
-            success:true,
-            responseData:{
-                user
+    const tokenData = {
+        _id: user?._id
+    }
+    const token = jwt.sign(tokenData, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE })
+
+
+
+    res.status(200)
+        .cookie("token", token, {
+            expires: new Date(Date.now() + process.env.COOKIE_EXPIRES * 24 * 60 * 60 * 1000),
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "None"
+        })
+
+        .json({
+            success: true,
+            responseData: {
+                user,
+                token
             }
 
         })
-        res.send("hello regsiter")
-        });
+    res.send("hello regsiter")
+});
+
+
+export const getprofile = asyncHandler(async (req, res, next) => {
+    const userId = req.user._id
+
+    const profile = await User.findById(userId)
+
+    res.status(200).json({
+        success: true,
+        responseData: profile
+    })
+
+});
+
+export const logout = asyncHandler(async (req, res, next) => {
+    res.status(200)
+        .cookie("token", "", {
+            expiresIn: (Date.now()),
+            httpOnly: true
+        })
+        .json({
+            success:true,
+            mesage:"logout succesfull"
+        })
+})
 
 
 
-  
 
-        
-    
+
+
+
 

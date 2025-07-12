@@ -1,4 +1,4 @@
-class Errorhandler extends Error{
+class ErrorHandler extends Error{
     constructor(message,statusCode){
         super(message)
         this.statusCode=statusCode
@@ -6,7 +6,7 @@ class Errorhandler extends Error{
     }
 
 }
-export const errorhandler=Errorhandler;
+export default ErrorHandler;
 
 
 // without Error.captureStackTrace:
