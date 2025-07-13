@@ -1,0 +1,15 @@
+2 middileware & controller completed like register login getprofile and log out
+
+
+now comes for message:
+for sending message:required 3 things->senderId:req.user._id
+                                        reciverId:requested from frontend->___/__/:receiverId(req.params.id)
+                                        Message:req.body.message
+
+
+                                        along with message we have to ensure conversation model
+
+                                        if already talked:then conversation.find(s,R)
+                                           else create.conversation(s,r)
+                                                message create
+                                                conversation.message.push(messageId)
