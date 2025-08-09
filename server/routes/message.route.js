@@ -5,7 +5,7 @@ const router=express.Router();
 
 
 router.post('/send/:receiverId',isAuthenticated,sendMessage)
-router.post('/get-message/:otherparticipantId',isAuthenticated,getMessage)
+router.get('/get-message/:otherparticipantId',isAuthenticated,getMessage)
 
 
 export default router

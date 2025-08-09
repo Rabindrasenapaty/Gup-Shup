@@ -1,12 +1,20 @@
-import dotenv from 'dotenv'
-dotenv.config()
+import {app,server } from './socket/socket.js'
 import express from 'express'
 import cookieParser from 'cookie-parser'
+import cors from 'cors'
+
 
 import { connectDB } from './db/connection1.db.js'
 connectDB();
 
-const app=express()
+
+
+app.use(cors({
+    origin:[process.env.CLIENT_URL],
+    credentials: true
+
+}
+))
 app.use(express.json())
 app.use(cookieParser())
 
@@ -27,7 +35,7 @@ app.get('/',(req,res,next)=>{
     res.send("hello world")
 })
 
-app.listen(PORT,()=>{
+server.listen(PORT,()=>{
     console.log("server started");
     
 })

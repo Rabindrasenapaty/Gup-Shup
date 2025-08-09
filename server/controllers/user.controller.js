@@ -34,12 +34,13 @@ export const register = asyncHandler(async (req, res, next) => {
     const token = jwt.sign(tokenData, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE })
 
     res.status(200)
-        .cookie("token", token, {
-            expires: new Date(Date.now() + process.env.COOKIE_EXPIRES * 24 * 60 * 60 * 1000),
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "None"
-        })
+    res.cookie("token", token, {
+        httpOnly: true,
+        secure:true,
+        sameSite: 'None',
+        expires: new Date(Date.now() + process.env.COOKIE_EXPIRES * 24 * 60 * 60 * 1000),
+    })
+
         .json({
             success: true,
             responseData: {
@@ -82,9 +83,10 @@ export const login = asyncHandler(async (req, res, next) => {
         .cookie("token", token, {
             expires: new Date(Date.now() + process.env.COOKIE_EXPIRES * 24 * 60 * 60 * 1000),
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
+            secure: true,
             sameSite: "None"
         })
+
 
         .json({
             success: true,
@@ -117,19 +119,19 @@ export const logout = asyncHandler(async (req, res, next) => {
             httpOnly: true
         })
         .json({
-            success:true,
-            mesage:"logout succesfull"
+            success: true,
+            mesage: "logout succesfull"
         })
 })
 
-export const getOtherUser=asyncHandler(async(req,res,next)=>{
-    const otherusers=await User.find({_id:{$ne:req.user.Id}})
+export const getOtherUser = asyncHandler(async (req, res, next) => {
+    const otherusers = await User.find({ _id: { $ne: req.user.Id } })
     res.status(200)
-    .json({
-        success:true,
-        responsedata:otherusers
-    })
-    
+        .json({
+            success: true,
+            responsedata: otherusers
+        })
+
 })
 
 
